@@ -61,7 +61,7 @@ RPM := $(BASENAME).$(RPM_TARGET).rpm
 EOSRPM := $(BASENAME)-eos.$(RPM_TARGET).rpm
 SWIX := $(BASENAME).swix
 
-all: rpm $(SWIX)
+all: distclean rpm
 rpm: $(RPM)
 
 $(SWIX): $(EOSRPM) manifest.txt
@@ -135,7 +135,7 @@ common.spec: .dist-stamp tcollector.spec ChangeLog $(VPATH)/README Makefile
 RPM_SPEC := $(RPM:.rpm=.spec)
 $(RPM_SPEC): common.spec linux.spec
 	mkdir -p $(DESTDIR)/etc/init.d
-	cp initd.sh $(DESTDIR)/etc/init.d/tcollector
+	cat initd.sh|sed -e "s/TSD_HOST=tsd/TSD_HOST=$$TSD_HOST/" > $(DESTDIR)/etc/init.d/tcollector
 	{ \
           cat $^; \
           echo %files; \
