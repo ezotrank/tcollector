@@ -14,6 +14,9 @@ other extension, for example:
   extension tcollector-X.Y.Z-A.swix
 Then restart the CLI.
 
+Build custom rpm example
+TSD_HOST=host.example.com ADD="collectors/0/elasticsearch.py" make
+
 Install rpm package
 rpm -Uvh --force --nodeps tcollector-1.2.1-1.noarch.rpm
 

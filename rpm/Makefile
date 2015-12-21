@@ -49,6 +49,8 @@ EXTRA := \
 	eos/collectors/agentcpu.sh	\
 	eos/collectors/eos.py	\
 
+ADDITIONAL := $$ADD
+
 git_version := \
   `git rev-list --pretty=format:%h HEAD --max-count=1 | sed 1d || echo unknown`
 git_fullsha1 := \
@@ -104,6 +106,20 @@ manifest.txt: $(EOSRPM) Makefile
           esac; \
           echo $(CP_P) "$(VPATH)/$$file" "'$(DESTDIR)/$(tcollectordir)/$$file'"; \
           $(CP_P) "$(VPATH)/$$file" "$(DESTDIR)/$(tcollectordir)/$$file" || exit $$?; \
+        done
+	@for file in $(ADDITIONAL); do \
+					d=`dirname "$$file"`;  \
+					if test ! -d "$(DESTDIR)/$(tcollectordir)/$$d"; then \
+						echo "%dir \"$(tcollectordir)/$$d\"" >>filelist; \
+						echo $(MKDIR_P) "'$(DESTDIR)/$(tcollectordir)/$$d'"; \
+						$(MKDIR_P) "$(DESTDIR)/$(tcollectordir)/$$d" || exit $$?; \
+					fi; \
+					echo "\"$(tcollectordir)/$$file\"" >>filelist; \
+					case $$file in \
+						(*.py) echo "\"$(tcollectordir)/$${file}c\"" >>filelist;; \
+					esac; \
+					echo $(CP_P) "$(VPATH)/$$file" "'$(DESTDIR)/$(tcollectordir)/$$file'"; \
+					$(CP_P) "$(VPATH)/$$file" "$(DESTDIR)/$(tcollectordir)/$$file" || exit $$?; \
         done
 	@for file in $(EXTRA); do \
           src=$(VPATH)/$$file; \
