@@ -26,8 +26,9 @@ import sys
 import time
 import re
 
+import os
+sys.path.insert(1, os.path.join(sys.path[0], '../..'))
 from collectors.lib import utils
-
 
 COLLECTION_INTERVAL = 15  # seconds
 DEFAULT_TIMEOUT = 10.0    # seconds
@@ -207,13 +208,10 @@ def main(argv):
        if "cpu" in process:
           d = process["cpu"]
           printmetric("process.cpu.percent", d["percent"])
-          printmetric("process.cpu.sys", d["sys_in_millis"] / 1000.)
-          printmetric("process.cpu.user", d["user_in_millis"] / 1000.)
+          printmetric("process.cpu.sys", d["total_in_millis"] / 1000.)
           del d
        if "mem" in process:
           d = process["mem"]
-          printmetric("process.mem.resident", d["resident_in_bytes"])
-          printmetric("process.mem.shared", d["share_in_bytes"])
           printmetric("process.mem.total_virtual", d["total_virtual_in_bytes"])
           del d
        del process
